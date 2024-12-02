@@ -36,6 +36,7 @@ public class UserService {
     return userRepository.findById(id).map(user -> {
         user.setUsername(userDetails.getUsername());
         user.setEmail(userDetails.getEmail());
+        user.setPhone(userDetails.getPhone());
         user.setRole(userDetails.getRole());
 
         if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
