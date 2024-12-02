@@ -56,9 +56,9 @@ public class UserService {
         return false;
     } 
 
-    public Optional<User> validateUser(String username , String password) {
+    public Optional<User> validateUser(String email , String password) {
 
-        Optional<User> userOptional = userRepository.findByUsername(username);
+        Optional<User> userOptional = userRepository.findByEmail(email);
         
         if (userOptional.isPresent()) {
             User user = userOptional.get();
