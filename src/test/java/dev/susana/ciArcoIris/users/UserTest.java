@@ -14,6 +14,7 @@ class UserTest {
                 .username("testuser")
                 .password("password123")
                 .email("test@example.com")
+                .phone("612345678")
                 .role("USER")
                 .build();
 
@@ -22,6 +23,7 @@ class UserTest {
         assertThat(user.getUsername(), is("testuser"));
         assertThat(user.getPassword(), is("password123"));
         assertThat(user.getEmail(), is("test@example.com"));
+        assertThat(user.getPhone(), is("612345678"));
         assertThat(user.getRole(), is("USER"));
     }
 
@@ -33,6 +35,7 @@ class UserTest {
         user.setUsername("updatedUser");
         user.setPassword("newPassword");
         user.setEmail("updated@example.com");
+        user.setPhone("987654321");
         user.setRole("ADMIN");
 
 
@@ -40,6 +43,7 @@ class UserTest {
         assertThat(user.getUsername(), is("updatedUser"));
         assertThat(user.getPassword(), is("newPassword"));
         assertThat(user.getEmail(), is("updated@example.com"));
+        assertThat(user.getPhone(), is("987654321"));
         assertThat(user.getRole(), is("ADMIN"));
     }
 
@@ -51,6 +55,7 @@ class UserTest {
                 .username("testuser")
                 .password("password123")
                 .email("test@example.com")
+                .phone("612345678")
                 .role("USER")
                 .build();
 
@@ -59,6 +64,7 @@ class UserTest {
                 .username("testuser")
                 .password("password123")
                 .email("test@example.com")
+                .phone("612345678")
                 .role("USER")
                 .build();
 
@@ -75,11 +81,12 @@ class UserTest {
                 .username("testuser")
                 .password("password123")
                 .email("test@example.com")
+                .phone("612345678")
                 .role("USER")
                 .build();
 
         
-        String expectedString = "User(id=1, username=testuser, password=password123, email=test@example.com, role=USER)";
+        String expectedString = "User(id=1, username=testuser, password=password123, email=test@example.com, phone=612345678, role=USER)";
         assertThat(user.toString(), is(expectedString));
     }
 }
