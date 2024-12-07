@@ -21,7 +21,7 @@ import lombok.*;
         private Long id;
 
         @OneToOne
-        @JoinColumn(name = "user_id")
+        @JoinColumn(name = "id_user")
         private User user;
     
         @Column(nullable = false)
