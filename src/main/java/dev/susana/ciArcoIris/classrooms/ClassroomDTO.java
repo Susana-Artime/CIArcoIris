@@ -1,7 +1,7 @@
 package dev.susana.ciArcoIris.classrooms;
 
 import java.util.List;
-import dev.susana.ciArcoIris.children.Child;
+import dev.susana.ciArcoIris.children.ChildDTO;
 import lombok.*;
 
 @Data
@@ -17,6 +17,5 @@ public class ClassroomDTO {
     private int maxAge;
     private List<ChildDTO> children;
     
-
 
 }
