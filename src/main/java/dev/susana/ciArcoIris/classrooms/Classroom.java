@@ -2,7 +2,6 @@ package dev.susana.ciArcoIris.classrooms;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import dev.susana.ciArcoIris.users.User;
 import dev.susana.ciArcoIris.children.Child;
 import jakarta.persistence.*;
