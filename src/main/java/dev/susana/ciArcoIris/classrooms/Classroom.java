@@ -33,6 +33,7 @@ import lombok.*;
         private int maxAge;
     
         @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL)
+        @Builder.Default
         private List<Child> children = new ArrayList<>(); 
         
         

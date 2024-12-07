@@ -25,7 +25,7 @@ class UserServiceTest {
 
     @InjectMocks
     private UserService userService;
-
+   
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -92,6 +92,7 @@ class UserServiceTest {
         verify(userRepository).findById(1L);
     }
 
+    @SuppressWarnings("null")
     @Test
     void updateUser_updatesAndSavesUser() {
         User existingUser = new User();
@@ -112,12 +113,13 @@ class UserServiceTest {
         ResponseEntity<User> response = userService.updateUser(1L, updatedDetails);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody(), "El cuerpo de la respuesta no debe ser nulo.");
         assertEquals("newUsername", response.getBody().getUsername());
         assertEquals("encodedNewPassword", response.getBody().getPassword());
         assertEquals("Directora", response.getBody().getRole());
 
         User responseBody = response.getBody();
-        assertNotNull(responseBody); // Aseguramos que no sea null
+        assertNotNull(responseBody);
         assertEquals(1L, responseBody.getId());
 
         verify(passwordEncoder).encode("newPassword");
@@ -135,7 +137,7 @@ class UserServiceTest {
     assertNull(response.getBody());
 
     }
-
+    @SuppressWarnings("null")
     @Test
 void updateUser_shouldEncodePasswordWhenPasswordIsProvided() {
    
@@ -164,7 +166,7 @@ void updateUser_shouldEncodePasswordWhenPasswordIsProvided() {
     verify(passwordEncoder).encode("newPassword");
     verify(userRepository).save(existingUser);
 }
-
+@SuppressWarnings("null")
 @Test
 void updateUser_shouldNotUpdatePasswordWhenPasswordIsNotProvided() {
     
