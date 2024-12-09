@@ -12,7 +12,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import dev.susana.ciArcoIris.classrooms.Classroom;
@@ -41,7 +41,7 @@ import lombok.*;
         private String name;
     
         @Column(nullable = false)
-        private Date dayBirth;
+        private LocalDate dayBirth;
 
         private String comments;
         
