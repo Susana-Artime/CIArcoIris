@@ -1,26 +1,18 @@
 package dev.susana.ciArcoIris.classrooms;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import dev.susana.ciArcoIris.children.ChildDTO;
 import dev.susana.ciArcoIris.config.CustomUserDetailsService;
 import dev.susana.ciArcoIris.users.User;
 import dev.susana.ciArcoIris.users.UserRepository;
-import dev.susana.ciArcoIris.users.UserService;
-
 
 @Service
 public class ClassroomService {
 
      @Autowired
     private ClassroomRepository classroomRepository;
-
-    @Autowired
-    private ChildRepository childRepository;
 
     @Autowired
     private UserRepository userRepository;
