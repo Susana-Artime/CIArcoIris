@@ -16,10 +16,13 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(request ->
-        request.requestMatchers("/api/admin/**").hasRole("Directora").anyRequest().authenticated()).httpBasic(Customizer.withDefaults());
+        http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(request -> request
+        .requestMatchers("/api/admin/**").hasRole("Directora")
+        .requestMatchers("/api/classrooms/{id}/children").hasAnyRole("Directora", "Profesora")
+        .anyRequest().authenticated())
+        .httpBasic(Customizer.withDefaults());
         return http.build();
-    }    
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder(){
