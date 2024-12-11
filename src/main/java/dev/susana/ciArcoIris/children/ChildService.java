@@ -5,14 +5,12 @@ import dev.susana.ciArcoIris.classrooms.ClassroomRepository;
 import dev.susana.ciArcoIris.guardians.GuardianRepository;
 import dev.susana.ciArcoIris.guardians.Guardian;
 import dev.susana.ciArcoIris.guardians.GuardianDTO;
-import dev.susana.ciArcoIris.users.User;
-import dev.susana.ciArcoIris.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 public class ChildService {
@@ -99,7 +97,7 @@ public class ChildService {
                 .orElseThrow(() -> new RuntimeException("Niño no encontrado con id: " + id));
 
         Guardian guardian = guardianRepository.findById(idGuardian)
-                .orElseThrow(() -> new RuntimeException("Tutor no encontrado con id: " + idTutor));
+                .orElseThrow(() -> new RuntimeException("Tutor no encontrado con id: " + idGuardian));
 
         guardian.setChild(child);
         guardianRepository.save(guardian);
