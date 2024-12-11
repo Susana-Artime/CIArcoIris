@@ -47,18 +47,18 @@ public class ClassroomController {
         return new ResponseEntity<>(classroomService.getChildrenByClassroomId(id), HttpStatus.OK);
     }
 
-    @PutMapping(path = "/admin/classroooms/{id}")
-    public ResponseEntity<ClassroomDTO> updateClassroom(@RequestBody ClassroomDTO classroom, @PathVariable Long id) {
+    @PutMapping(path = "/admin/classrooms/{id}")
+    public ResponseEntity<ClassroomDTO> updateClassroom(@PathVariable Long id, @RequestBody ClassroomDTO classroom) {
         return new ResponseEntity<>(classroomService.updateClassroom(classroom, id), HttpStatus.OK);
     }
 
     @PatchMapping(path = "admin/classrooms/{id}")
-    public ResponseEntity<ClassroomDTO> updateTeacher(@PathVariable Long id, @RequestParam Long id_user) {
-        return new ResponseEntity<>(classroomService.updateTeacher(id, id_user), HttpStatus.OK);
+    public ResponseEntity<ClassroomDTO> updateTeacher(@PathVariable Long id, @RequestParam Long userId) {
+        return new ResponseEntity<>(classroomService.updateTeacher(id, userId), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/admin/classrooms/{id}")
-    public ResponseEntity<Classroom> deleteClassrooom(@PathVariable Long id) {
+    public ResponseEntity<Classroom> deleteClassroom(@PathVariable Long id) {
         classroomService.deleteClassroom(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
