@@ -2,6 +2,7 @@ package dev.susana.ciArcoIris.children;
 
 import dev.susana.ciArcoIris.classrooms.Classroom;
 import dev.susana.ciArcoIris.classrooms.ClassroomRepository;
+import dev.susana.ciArcoIris.guardians.GuardianRepository;
 import dev.susana.ciArcoIris.guardians.Guardian;
 import dev.susana.ciArcoIris.guardians.GuardianDTO;
 import dev.susana.ciArcoIris.users.User;
@@ -21,6 +22,9 @@ public class ChildService {
 
     @Autowired
     private ClassroomRepository classroomRepository;
+
+    @Autowired
+    private GuardianRepository guardianRepository;
 
     public ChildDTO createChild(ChildDTO childDTO) {
         Child child = new Child();
