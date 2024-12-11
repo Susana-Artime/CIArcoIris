@@ -12,14 +12,16 @@ import lombok.*;
 public class ChildDTO {
 
     private Long id;
+    private Long id_classroom;
     private String name;
     private LocalDate dayBirth;
     private String comments;
     private List<GuardianDTO> guardians;
 
 
-    public ChildDTO(Long id, String name, LocalDate dayBirth, String comments) {
+    public ChildDTO(Long id, Long id_classroom, String name, LocalDate dayBirth, String comments) {
         this.id = id;
+        this.id_classroom= id_classroom;
         this.name = name;
         this.dayBirth = dayBirth;
         this.comments = comments;

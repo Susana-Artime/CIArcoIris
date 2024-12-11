@@ -56,7 +56,7 @@ public class ClassroomService {
                         classroom.getMaxAge(),
                         classroom.getChildren() != null
                                 ? classroom.getChildren().stream()
-                                .map(child -> new ChildDTO(child.getId(), child.getName(), child.getDayBirth(), null))
+                                .map(child -> new ChildDTO(child.getId(), child.getClassroom().getId(), child.getName(), child.getDayBirth(), null))
                                 .toList()
                                 : null
                 ))
@@ -71,6 +71,7 @@ public class ClassroomService {
             ? classroom.getChildren().stream()
                 .map(child -> new ChildDTO(
                     child.getId(),
+                    child.getClassroom().getId(),
                     child.getName(),
                     child.getDayBirth(),
                     null)) 
@@ -87,6 +88,7 @@ public class ClassroomService {
                 ? classroom.getChildren().stream()
                     .map(child -> new ChildDTO(
                         child.getId(),
+                        child.getClassroom().getId(),
                         child.getName(),
                         child.getDayBirth(),
                         null))
