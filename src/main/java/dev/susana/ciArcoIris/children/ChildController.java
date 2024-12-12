@@ -47,13 +47,7 @@ public class ChildController {
         return new ResponseEntity<>(childService.assignGuardian(id, idGuardian), HttpStatus.OK);
     }
 
-    @PatchMapping(path = "/admin/children/{id}/assign-classroom")
-    public ResponseEntity<ChildDTO> assignClassroomToChild(@PathVariable Long id, @RequestParam Long idClassroom) {
-    ChildDTO childDTO = childService.assignClassroom(id, idClassroom);
-        return new ResponseEntity<>(childDTO, HttpStatus.OK);
-}
-
-    @DeleteMapping(path = "/admin/children/{id}")
+     @DeleteMapping(path = "/admin/children/{id}")
     public ResponseEntity<Void> deleteChild(@PathVariable Long id) {
         childService.deleteChild(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

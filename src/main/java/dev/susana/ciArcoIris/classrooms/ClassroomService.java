@@ -46,6 +46,7 @@ public class ClassroomService {
     }
 
     public List<ClassroomDTO> getAll() {
+
         return classroomRepository.findAll()
                 .stream()
                 .map(classroom -> new ClassroomDTO(
@@ -54,18 +55,21 @@ public class ClassroomService {
                         classroom.getName(),
                         classroom.getMinAge(),
                         classroom.getMaxAge(),
-                        classroom.getChildren() != null
-                                ? classroom.getChildren().stream()
-                                .map(child -> new ChildDTO(child.getId(), child.getClassroom().getId(), child.getName(), child.getDayBirth(), null))
-                                .toList()
-                                : null
+                        null
                 ))
                 .toList();
     }
 
     public List<ChildDTO> getChildrenByClassroomId(Long id) {
+
+    User currentUser = customUserDetailsService.getCurrentUser();
+
     Classroom classroom = classroomRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Aula no encontrada con id: " + id));
+
+    if (!currentUser.getId().equals(classroom.getUser().getId())) {
+            throw new RuntimeException("No tienes permisos para ver la aula con id: " + id);
+    }
 
     return classroom.getChildren() != null
             ? classroom.getChildren().stream()
@@ -74,7 +78,7 @@ public class ClassroomService {
                     child.getClassroom().getId(),
                     child.getName(),
                     child.getDayBirth(),
-                    null)) 
+                    child.getComments())) 
                 .toList()
                 : List.of();
             
@@ -84,24 +88,15 @@ public class ClassroomService {
         Classroom classroom = classroomRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Aula no encontrada con id: " + id));
     
-        List<ChildDTO> children = (classroom.getChildren() != null)
-                ? classroom.getChildren().stream()
-                    .map(child -> new ChildDTO(
-                        child.getId(),
-                        child.getClassroom().getId(),
-                        child.getName(),
-                        child.getDayBirth(),
-                        null))
-                    .toList()
-                : null;
-    
+           
         return new ClassroomDTO(
                 classroom.getId(),
                 classroom.getUser().getId(),
                 classroom.getName(),
                 classroom.getMinAge(),
                 classroom.getMaxAge(),
-                children
+                null
+                
         );
     }
 

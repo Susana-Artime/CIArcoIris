@@ -8,6 +8,7 @@ import dev.susana.ciArcoIris.guardians.GuardianDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,34 +16,65 @@ import java.util.List;
 @Service
 public class ChildService {
 
-    @Autowired
-    private ChildRepository childRepository;
+        @Autowired
+        private ChildRepository childRepository;
 
-    @Autowired
-    private ClassroomRepository classroomRepository;
+        @Autowired
+        private ClassroomRepository classroomRepository;
 
-    @Autowired
-    private GuardianRepository guardianRepository;
+        @Autowired
+        private GuardianRepository guardianRepository;
 
-    public ChildDTO createChild(ChildDTO childDTO) {
+        public ChildDTO createChild(ChildDTO childDTO) {
+        
         Child child = new Child();
         child.setName(childDTO.getName());
         child.setDayBirth(childDTO.getDayBirth());
         child.setComments(childDTO.getComments());
 
+        
+        int childAge = calculateAge(childDTO.getDayBirth());
+
+        Classroom classroom = findClassroomForAge(childAge);
+
+        if (classroom == null) {
+                throw new RuntimeException("No se encontró un aula adecuada para la edad: " + childAge);
+        }
+
+        child.setClassroom(classroom);
+
         if (childDTO.getGuardians() != null && !childDTO.getGuardians().isEmpty()) {
             List<Guardian> guardians = childDTO.getGuardians()
                     .stream()
-                    .map(guardianDTO -> new Guardian(guardianDTO.getId(), child, guardianDTO.getName(),guardianDTO.getEmail(),guardianDTO.getPhone(),guardianDTO.getRelationship()))
+                    .map(guardianDTO -> new Guardian(guardianDTO.getId(), child, guardianDTO.getName(), guardianDTO.getEmail(), guardianDTO.getPhone(), guardianDTO.getRelationship()))
                     .toList();
             child.setGuardians(guardians);
         }
-
+    
+        
         Child savedChild = childRepository.save(child);
-
+    
         return mapToDTO(savedChild);
     }
 
+        private int calculateAge(LocalDate DayBirth) {
+        return LocalDate.now().getYear() - DayBirth.getYear();
+        }
+
+    private Classroom findClassroomForAge(int age) {
+        if (age >= 0 && age <= 1) {
+            return classroomRepository.findByName("Aula Pollitos")
+                    .orElseThrow(() -> new RuntimeException("Aula 'Aula Pollitos' no encontrada"));
+        } else if (age > 1 && age <= 2) {
+            return classroomRepository.findByName("Aula Patitos")
+                    .orElseThrow(() -> new RuntimeException("Aula 'Aula Patitos' no encontrada"));
+        } else if (age > 2 && age <= 3) {
+            return classroomRepository.findByName("Aula Ardillas")
+                    .orElseThrow(() -> new RuntimeException("Aula 'Aula Ardillas' no encontrada"));
+        } else {
+            return null;
+        }
+    }
 
     public List<ChildDTO> getAllChildren() {
         return childRepository.findAll()
@@ -53,12 +85,12 @@ public class ChildService {
                         child.getName(),
                         child.getDayBirth(),
                         child.getComments()
-                       
+
                 ))
                 .toList();
-    }
+        }
 
-    public ChildDTO getChildById(Long id) {
+        public ChildDTO getChildById(Long id) {
         Child child = childRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Niño no encontrado con id: " + id));
 
@@ -132,40 +164,6 @@ public class ChildService {
         .build();
     }
 
- 
-
-    public ChildDTO assignClassroom(Long id, Long idClassroom) {
-        Child child = childRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Niño no encontrado con id: " + id));
-
-        Classroom classroom = classroomRepository.findById(idClassroom)
-                .orElseThrow(() -> new RuntimeException("Aula no encontrada con id: " + idClassroom));
-
-        child.setClassroom(classroom);
-        Child updatedChild = childRepository.save(child);
-
-        return ChildDTO.builder()
-        .id(updatedChild.getId())
-        .id_classroom(updatedChild.getClassroom() != null ? updatedChild.getClassroom().getId() : null)
-        .name(updatedChild.getName())
-        .dayBirth(updatedChild.getDayBirth())
-        .comments(updatedChild.getComments())
-        .guardians(updatedChild.getGuardians() != null
-                ? updatedChild.getGuardians().stream()
-                    .map(g -> GuardianDTO.builder()
-                            .id(g.getId())
-                            .childId(updatedChild.getId())
-                            .name(g.getName())
-                            .email(g.getEmail())
-                            .phone(g.getPhone())
-                            .relationship(g.getRelationship())
-                            .build())
-                    .toList()
-                : null)
-        .build();
-    }
- 
-
     public void deleteChild(Long id) {
         Child child = childRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Niño no encontrado con id: " + id));
@@ -176,6 +174,7 @@ public class ChildService {
     private ChildDTO mapToDTO(Child child) {
         return ChildDTO.builder()
                 .id(child.getId())
+                .id_classroom(child.getClassroom() != null ? child.getClassroom().getId() : null)
                 .name(child.getName())
                 .dayBirth(child.getDayBirth())
                 .comments(child.getComments())
