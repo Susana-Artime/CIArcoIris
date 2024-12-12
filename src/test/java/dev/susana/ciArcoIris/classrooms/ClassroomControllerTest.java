@@ -4,6 +4,7 @@ import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -105,14 +106,28 @@ public class ClassroomControllerTest {
         
         Long classroomId = 1L;
         List<ChildDTO> mockChildren = List.of(
-            new ChildDTO(1L, classroomId, "Child A","2015-03-25", "Good student"),
-            new ChildDTO(2L, classroomId, "Child B", "2016-07-12", "Needs improvement")
-        );
+        ChildDTO.builder()
+                .id(1L)
+                .id_classroom(classroomId)
+                .name("Child A")
+                .dayBirth(LocalDate.parse("2015-03-25"))
+                .comments("Good student")
+                .build(),
+        ChildDTO.builder()
+                .id(2L)
+                .id_classroom(classroomId)
+                .name("Child B")
+                .dayBirth(LocalDate.parse("2016-07-12"))
+                .comments("Needs improvement")
+                .build()
+    );
 
         when(classroomService.getChildrenByClassroomId(classroomId)).thenReturn(mockChildren);
 
+    
         ResponseEntity<List<ChildDTO>> response = classroomController.getChildrenByClassroomId(classroomId);
-        
+
+    
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(mockChildren);
         verify(classroomService, times(1)).getChildrenByClassroomId(classroomId);
