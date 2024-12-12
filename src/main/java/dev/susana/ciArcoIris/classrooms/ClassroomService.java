@@ -62,15 +62,13 @@ public class ClassroomService {
 
     public List<ChildDTO> getChildrenByClassroomId(Long id) {
 
-    User currentUser = customUserDetailsService.getCurrentUser();
+        if (!isTeacherOrDirectorOfClassroom(id)) {
+                throw new RuntimeException("No tienes permisos para ver la aula con id: " + id);
+            }
 
     Classroom classroom = classroomRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Aula no encontrada con id: " + id));
-
-    if (!currentUser.getId().equals(classroom.getUser().getId())) {
-            throw new RuntimeException("No tienes permisos para ver la aula con id: " + id);
-    }
-
+    
     return classroom.getChildren() != null
             ? classroom.getChildren().stream()
                 .map(child -> new ChildDTO(
@@ -152,11 +150,17 @@ public class ClassroomService {
         classroomRepository.delete(classroom);
     }
 
-    public boolean isTeacherOfClassroom(Long classroomId) {
+    public boolean isTeacherOrDirectorOfClassroom(Long classroomId) {
+        
         User currentUser = customUserDetailsService.getCurrentUser();
+    
+        if ("Directora".equals(currentUser.getRole())) {
+            return true;
+        }
+           
         Classroom classroom = classroomRepository.findById(classroomId)
                 .orElseThrow(() -> new RuntimeException("El aula no existe"));
-
+    
         return classroom.getUser().getId().equals(currentUser.getId());
     }
 

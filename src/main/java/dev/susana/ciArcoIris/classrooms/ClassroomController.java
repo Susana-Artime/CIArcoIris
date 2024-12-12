@@ -25,7 +25,7 @@ public class ClassroomController {
      @Autowired
     private ClassroomService classroomService;
 
-    @PostMapping(path = "/admin/create")
+    @PostMapping(path = "/admin/classrooms")
     public ResponseEntity<ClassroomDTO> addClassroom(@RequestBody ClassroomDTO classroom) {
         return new ResponseEntity<>(classroomService.createClass(classroom), HttpStatus.CREATED);
     }
