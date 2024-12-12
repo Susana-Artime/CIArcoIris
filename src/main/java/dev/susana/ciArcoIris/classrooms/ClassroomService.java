@@ -2,11 +2,13 @@ package dev.susana.ciArcoIris.classrooms;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import dev.susana.ciArcoIris.children.ChildDTO;
 import dev.susana.ciArcoIris.config.CustomUserDetailsService;
 import dev.susana.ciArcoIris.users.User;
 import dev.susana.ciArcoIris.users.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class ClassroomService {
@@ -61,25 +63,25 @@ public class ClassroomService {
     }
 
     public List<ChildDTO> getChildrenByClassroomId(Long id) {
-
-        if (!isTeacherOrDirectorOfClassroom(id)) {
-                throw new RuntimeException("No tienes permisos para ver la aula con id: " + id);
-            }
-
-    Classroom classroom = classroomRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Aula no encontrada con id: " + id));
+        
+        Classroom classroom = classroomRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Aula no encontrada con id: " + id));
     
-    return classroom.getChildren() != null
-            ? classroom.getChildren().stream()
-                .map(child -> new ChildDTO(
-                    child.getId(),
-                    child.getClassroom().getId(),
-                    child.getName(),
-                    child.getDayBirth(),
-                    child.getComments())) 
-                .toList()
+        if (!isTeacherOrDirectorOfClassroom(id)) {
+            throw new AccessDeniedException("No tienes permisos para ver la aula con id: " + id);
+        }
+    
+        
+        return classroom.getChildren() != null
+                ? classroom.getChildren().stream()
+                    .map(child -> new ChildDTO(
+                        child.getId(),
+                        classroom.getId(), 
+                        child.getName(),
+                        child.getDayBirth(),
+                        child.getComments()))
+                    .toList()
                 : List.of();
-            
     }
 
     public ClassroomDTO getClassroomById(Long id) {
@@ -153,15 +155,25 @@ public class ClassroomService {
     public boolean isTeacherOrDirectorOfClassroom(Long classroomId) {
         
         User currentUser = customUserDetailsService.getCurrentUser();
-    
-        if ("Directora".equals(currentUser.getRole())) {
-            return true;
-        }
-           
-        Classroom classroom = classroomRepository.findById(classroomId)
-                .orElseThrow(() -> new RuntimeException("El aula no existe"));
-    
-        return classroom.getUser().getId().equals(currentUser.getId());
+
+    if (currentUser == null) {
+        throw new IllegalStateException("No se pudo obtener el usuario actual.");
     }
 
+    // Si el rol es Directora, tiene permisos automáticamente
+    if ("Directora".equals(currentUser.getRole())) {
+        return true;
+    }
+
+    // Valida si el aula existe
+    Classroom classroom = classroomRepository.findById(classroomId)
+            .orElseThrow(() -> new EntityNotFoundException("El aula no existe"));
+
+    // Verifica si el usuario es el profesor asignado al aula
+    if (classroom.getUser() == null) {
+        throw new IllegalStateException("El aula no tiene un usuario asignado.");
+    }
+
+    return classroom.getUser().getId().equals(currentUser.getId());
+}
 }
