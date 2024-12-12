@@ -13,25 +13,27 @@ public class GuardianService {
     private GuardianRepository guardianRepository; 
     @Autowired private ChildRepository childRepository; 
     
-    public GuardianDTO createGuardian(GuardianDTO guardianDTO) { 
+    public GuardianDTO createGuardian(GuardianDTO guardianDTO) {
 
-         Child child = childRepository.findById(guardianDTO.getChildId())
-         .orElseThrow(() -> new RuntimeException("Niño no encontrado con id: " + guardianDTO.getChildId())); 
-         
-         Guardian guardian = Guardian.builder() 
+        Child child = childRepository.findById(guardianDTO.getChildId())
+        .orElse(null);
+        if (child == null) {
+            throw new RuntimeException("Niño no encontrado con id: " + guardianDTO.getChildId());
+        }
 
-         .child(child) 
-         .name(guardianDTO.getName()) 
-         .email(guardianDTO.getEmail()) 
-         .phone(guardianDTO.getPhone()) 
-         .relationship(guardianDTO.getRelationship()) 
-         .build(); 
-         Guardian savedGuardian = guardianRepository.save(guardian); 
-         return mapToDTO(savedGuardian);
+        Guardian guardian = Guardian.builder()
+        .id(child.getId())
+        .name(guardianDTO.getName())
+        .email(guardianDTO.getEmail())
+        .phone(guardianDTO.getPhone())
+        .relationship(guardianDTO.getRelationship())
+        .build();
 
-    
+        guardianRepository.save(guardian);
+
+        return mapToDTO(guardian);
     }
-    
+
     public GuardianDTO getGuardianById(Long id) {
         Guardian guardian = guardianRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Guardián no encontrado con id: " + id));
@@ -40,8 +42,7 @@ public class GuardianService {
     }
 
     public List<GuardianDTO> getGuardiansByChildId(Long childId) {
-
-        Child child = childRepository.findById(childId)
+        childRepository.findById(childId)
                 .orElseThrow(() -> new RuntimeException("Niño no encontrado con id: " + childId));
 
         List<Guardian> guardians = guardianRepository.findByChildId(childId);
@@ -57,8 +58,9 @@ public class GuardianService {
         Guardian guardian = guardianRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Guardián no encontrado con id: " + id));
 
+       // guardian.setChild(guardianDTO.getChildId());
         guardian.setName(guardianDTO.getName());
-        guardian.setEmail(guardianDTO.getEmail());
+        guardian.setEmail(guardianDTO.getEmail());        
         guardian.setPhone(guardianDTO.getPhone());
         guardian.setRelationship(guardianDTO.getRelationship());
 
@@ -75,7 +77,7 @@ public class GuardianService {
     private GuardianDTO mapToDTO(Guardian guardian) {
         return GuardianDTO.builder()
                 .id(guardian.getId())
-                .childId(guardian.getChild().getId())
+                //.childId(guardian.getChildId())
                 .name(guardian.getName())
                 .email(guardian.getEmail())
                 .phone(guardian.getPhone())

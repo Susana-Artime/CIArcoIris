@@ -14,7 +14,7 @@ public class GuardianController {
     @Autowired
     private GuardianService guardianService;
 
-    @PostMapping (path = "/admin/create")
+    @PostMapping (path = "/admin/guardians")
     public ResponseEntity<GuardianDTO> createGuardian(@RequestBody GuardianDTO guardianDTO) {
         GuardianDTO savedGuardian = guardianService.createGuardian(guardianDTO);
         return new ResponseEntity<>(savedGuardian, HttpStatus.CREATED);
