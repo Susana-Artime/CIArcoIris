@@ -83,21 +83,27 @@ La **Aplicación de Gestión del Centro Infantil Arco Iris** es una API desarrol
    - Crear un esquema llamado `ciarcoiris`.
    - Actualizar las credenciales de acceso en `application.properties`.
 
-
 3. Clonar el repositorio:
 
-    git clone [https://github.com/Susana-Artime/CIArcoIris](https://github.com/Susana-Artime/CIArcoIris)
+   ```bash
 
-   
+   git clone [https://github.com/Susana-Artime/CIArcoIris](https://github.com/Susana-Artime/CIArcoIris)
+
+   ```
+
 4. Compilar y Ejecutar el Proyecto:
 
-   Ejecuta el siguiente comando para compilar:
+   ```bash
    
    mvn clean install
 
-   Luego,lanza la aplicación
+   ```
 
+    ```bash
+    
    mvn spring-boot:run
+    
+    ```
 
 ## Estructura del Proyecto
 
