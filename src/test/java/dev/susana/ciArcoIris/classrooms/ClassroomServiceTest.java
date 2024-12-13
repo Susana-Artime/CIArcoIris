@@ -1,6 +1,9 @@
 package dev.susana.ciArcoIris.classrooms;
 
+import dev.susana.ciArcoIris.children.Child;
+import dev.susana.ciArcoIris.children.ChildDTO;
 import dev.susana.ciArcoIris.config.CustomUserDetailsService;
+import dev.susana.ciArcoIris.guardians.Guardian;
 import dev.susana.ciArcoIris.users.User;
 import dev.susana.ciArcoIris.users.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,6 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.security.access.AccessDeniedException;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -120,4 +126,87 @@ public void testGetChildrenByClassroomIdAccessDenied() {
 
         verify(classroomRepository, times(1)).delete(classroom);  
     } 
+
+    @Test
+public void testGetChildrenByClassroomIdSuccess() {
+    Classroom mockClassroom = new Classroom();
+    mockClassroom.setId(3L);
+    mockClassroom.setUser(new User(1L, "directora", "password", "directora@ciarcoiris.com", "123456789", "Directora"));
+
+    List<Guardian> guardians = new ArrayList<>();
+    Child mockChild = new Child(
+                1L,                         
+                mockClassroom,              
+                guardians,                  
+                "Juan",
+                LocalDate.parse("2022-01-01"),
+                "Ningún comentario");
+    
+    mockClassroom.setChildren(List.of(mockChild));
+
+    when(classroomRepository.findById(3L)).thenReturn(Optional.of(mockClassroom));
+    when(customUserDetailsService.getCurrentUser()).thenReturn(mockClassroom.getUser());
+
+    List<ChildDTO> result = classroomService.getChildrenByClassroomId(3L);
+
+    assertNotNull(result);
+    assertEquals(1, result.size());
+    assertEquals("Juan", result.get(0).getName());
+}
+
+@Test
+public void testIsTeacherOrDirectorOfClassroomSuccessDirector() {
+    User currentUser = new User(1L, "directora", "password", "directora@ciarcoiris.com", "123456789", "Directora");
+    when(customUserDetailsService.getCurrentUser()).thenReturn(currentUser);
+
+    boolean result = classroomService.isTeacherOrDirectorOfClassroom(1L);
+
+    assertTrue(result);
+}
+
+@Test
+public void testIsTeacherOrDirectorOfClassroomFailNoPermissions() {
+    User currentUser = new User(2L, "profesora", "password", "profesora@ciarcoiris.com", "123456789", "Profesora");
+    Classroom classroom = new Classroom(1L, new User(1L, "directora", "password", "directora@ciarcoiris.com", "123456789", "Directora"), 
+                                          "Aula", 6, 12, null);
+
+    when(customUserDetailsService.getCurrentUser()).thenReturn(currentUser);
+    when(classroomRepository.findById(1L)).thenReturn(Optional.of(classroom));
+
+    boolean result = classroomService.isTeacherOrDirectorOfClassroom(1L);
+
+    assertFalse(result);
+}
+
+@Test
+public void testUpdateTeacherSuccess() {
+    User newTeacher = new User(2L, "newTeacher", "password", "teacher@ciarcoiris.com", "123456789", "Profesora");
+    when(userRepository.findById(2L)).thenReturn(Optional.of(newTeacher));
+    when(classroomRepository.findById(1L)).thenReturn(Optional.of(classroom));
+    when(classroomRepository.save(any(Classroom.class))).thenReturn(classroom);
+
+    ClassroomDTO result = classroomService.updateTeacher(1L, 2L);
+
+    assertNotNull(result);
+    assertEquals(2L, result.getUserId());
+}
+@Test
+public void testDeleteClassroomNotFound() {
+    when(classroomRepository.findById(99L)).thenReturn(Optional.empty());
+
+    RuntimeException thrown = assertThrows(RuntimeException.class, () -> {
+        classroomService.deleteClassroom(99L);
+    });
+
+    assertEquals("Aula no encontrada con id: 99", thrown.getMessage());
+}
+@Test
+public void testGetAllNoClassrooms() {
+    when(classroomRepository.findAll()).thenReturn(List.of());
+
+    List<ClassroomDTO> result = classroomService.getAll();
+
+    assertNotNull(result);
+    assertTrue(result.isEmpty());
+}
 }
