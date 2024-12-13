@@ -86,7 +86,7 @@ La **Aplicación de Gestión del Centro Infantil Arco Iris** es una API desarrol
 
 3. Clonar el repositorio:
 
-git clone [https://github.com/Susana-Artime/CIArcoIris](https://github.com/Susana-Artime/CIArcoIris)
+    git clone [https://github.com/Susana-Artime/CIArcoIris](https://github.com/Susana-Artime/CIArcoIris)
 
    
 4. Compilar y Ejecutar el Proyecto:
@@ -106,6 +106,8 @@ git clone [https://github.com/Susana-Artime/CIArcoIris](https://github.com/Susan
 **classrooms/:** Contiene el flujo y las operaciones de las aulas.
 
 **childs/:** Contiene el flujo y las operaciones de los niños.
+
+**guardians/:** Contiene el flujo y las operaciones de los tutores legales de los niños. (En desarrollo)
 
 
 
