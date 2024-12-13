@@ -87,7 +87,7 @@ La **Aplicación de Gestión del Centro Infantil Arco Iris** es una API desarrol
 
    ```bash
 
-   git clone [https://github.com/Susana-Artime/CIArcoIris](https://github.com/Susana-Artime/CIArcoIris)
+   git clone https://github.com/Susana-Artime/CIArcoIris
 
    ```
 
